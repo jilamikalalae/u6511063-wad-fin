@@ -11,6 +11,8 @@ const Alert = React.forwardRef((props, ref) => {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+Alert.displayName = 'Alert';
+
 export default function CustomerPage() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -32,7 +34,7 @@ export default function CustomerPage() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [fetchCustomers]); // Add fetchCustomers to the dependency array
+  }, []); // Add fetchCustomers to the dependency array
   
 
   // Handle delete customer
@@ -59,7 +61,8 @@ export default function CustomerPage() {
 
   // Handle customer form submission (for both create and update)
   const handleFormSubmit = async (data) => {
-    const url = formMode === 'create' ? `${process.env.NEXT_PUBLIC_API_URL}/customer` : `${process.env.NEXT_PUBLIC_API_URL}/customer/${selectedCustomer.id}`;
+    console.log(data)
+    const url = formMode === 'create' ? `${process.env.NEXT_PUBLIC_API_URL}/customer` : `${process.env.NEXT_PUBLIC_API_URL}/customer/${data._id}`;
     const method = formMode === 'create' ? 'POST' : 'PUT';
 
     // Logging the data being sent and the URL
@@ -82,7 +85,7 @@ export default function CustomerPage() {
         if (response.ok) {
             setMessage(`Customer ${formMode === 'create' ? 'created' : 'updated'} successfully`);
             fetchCustomers(); // Refresh the customer list
-            reset(); // Reset form fields
+            reset({ name: '', date: '', member: '', interest: '' }); // Reset form fields
             setSelectedCustomer(null); // Reset selected customer
             setFormMode('create'); // Switch back to create mode
             setOpenSnackbar(true);
@@ -132,7 +135,7 @@ export default function CustomerPage() {
                   <IconButton edge="end" onClick={() => handleEdit(customer)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton edge="end" onClick={() => handleDelete(customer.id)}>
+                  <IconButton edge="end" onClick={() => handleDelete(customer._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -184,6 +187,9 @@ function CustomerForm({ onSubmit, register, formMode }) {
               type="date"
               {...register("date")}
               fullWidth
+              InputLabelProps={{
+                shrink: true, // Keeps the label above the text field
+              }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
