@@ -32,7 +32,8 @@ export default function CustomerPage() {
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [fetchCustomers]); // Add fetchCustomers to the dependency array
+  
 
   // Handle delete customer
   const handleDelete = async (id) => {
