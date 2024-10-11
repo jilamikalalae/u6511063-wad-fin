@@ -69,8 +69,6 @@ export default function Home() {
     });
   }
 
-  
-
   return (
     <main>
       <div className="flex flex-row gap-4">
